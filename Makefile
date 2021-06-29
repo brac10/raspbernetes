@@ -4,30 +4,30 @@ SHELL := /bin/bash -o pipefail
 .DEFAULT_GOAL := help
 
 # Default variables
-MNT_DEVICE ?= /dev/mmcblk0
-MNT_ROOT    = /mnt/raspbernetes/root
-MNT_BOOT    = /mnt/raspbernetes/boot
-RPI_HOME    = $(MNT_ROOT)/home/pi
+MNT_DEVICE  = /dev/mmcblk0
+MNT_ROOT    = $(RPI_HOME)/raspbernetes/root
+MNT_BOOT    = $(RPI_HOME)/raspbernetes/boot
+RPI_HOME    = /home/pi
 OUTPUT_PATH = output
 
 # Raspberry PI host and IP configuration
-RPI_NETWORK_TYPE ?= wlan0
-RPI_HOSTNAME     ?= rpi-kube-master-01
-RPI_IP           ?= 192.168.1.101
-RPI_GATEWAY      ?= 192.168.1.1
-RPI_DNS          ?= $(RPI_GATEWAY)
-RPI_TIMEZONE     ?= Australia/Melbourne
+RPI_NETWORK_TYPE = wlan0
+RPI_HOSTNAME     = rpi-kube-master-01
+RPI_IP           = 192.168.1.101
+RPI_GATEWAY      = 192.168.1.1
+RPI_DNS          = $(RPI_GATEWAY)
+RPI_TIMEZONE     = America/Chicago
 
 # Kubernetes configuration
-KUBE_NODE_TYPE    ?= master
-KUBE_MASTER_VIP   ?= 192.168.1.100
-KUBE_MASTER_IP_01 ?= 192.168.1.101
-KUBE_MASTER_IP_02 ?= 192.168.1.102
-KUBE_MASTER_IP_03 ?= 192.168.1.103
+KUBE_NODE_TYPE    = master
+KUBE_MASTER_VIP   = 192.168.1.100
+KUBE_MASTER_IP_01 = 192.168.1.101
+KUBE_MASTER_IP_02 = 192.168.1.102
+KUBE_MASTER_IP_03 = 192.168.1.103
 
 # Wifi details if required
-WIFI_SSID     ?=
-WIFI_PASSWORD ?=
+WIFI_SSID     = bracom
+WIFI_PASSWORD = Scott1957
 
 # Raspbian image configuration
 RASPBIAN_VERSION       = raspbian_lite-2020-02-14
@@ -65,7 +65,7 @@ install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 mount ## Copy all configurations and
 .PHONY: create-conf
 create-conf: $(RPI_NETWORK_TYPE) bootstrap-conf dhcp-conf ## Add default start up script, disable SSH password and enable cgroups on boot
 	sudo sed -i "/^exit 0$$/i /home/pi/bootstrap/bootstrap.sh 2>&1 | logger -t kubernetes-bootstrap &" $(MNT_ROOT)/etc/rc.local
-	sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication no/g" $(MNT_ROOT)/etc/ssh/sshd_config
+	sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" $(MNT_ROOT)/etc/ssh/sshd_config
 	sudo sed -i "s/^/cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory /" $(MNT_BOOT)/cmdline.txt
 
 .PHONY: bootstrap-conf
@@ -89,23 +89,25 @@ dhcp-conf: ## Add dhcp configuration to set a static IP and gateway
 	echo "static domain_name_servers=$(RPI_DNS)" | sudo tee -a $(MNT_ROOT)/etc/dhcpcd.conf >/dev/null
 
 $(OUTPUT_PATH)/ssh/id_ed25519: ## Generate SSH keypair to use in cluster communication
-	ssh-keygen -t ed25519 -b 4096 -C "pi@raspberry" -f ./$(OUTPUT_PATH)/ssh/id_ed25519 -q -N ""
+	ssh-keygen -t ed25519 -b 4096 -C "pi@Ranger1975#" -f ./$(OUTPUT_PATH)/ssh/id_ed25519 -q -N ""
 
 ##@ Download and SD Card management
 .PHONY: format
-format: $(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img unmount ## Format the SD card with Raspbian
-	echo "Formatting SD card with $(RASPBIAN_IMAGE_VERSION).img"
-	sudo dd bs=4M if=./$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img of=$(MNT_DEVICE) status=progress conv=fsync
+format: #$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img unmount ## Format the SD card with Raspbian
+	echo "Formatting SD card"
+#	sudo dd bs=4M if=./$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img of=$(MNT_DEVICE) status=progress conv=fsync
 
 .PHONY: mount
 mount: ## Mount the current SD device
-	sudo mount $(MNT_DEVICE)p1 $(MNT_BOOT)
-	sudo mount $(MNT_DEVICE)p2 $(MNT_ROOT)
+    echo "Mounting Step Here"
+#	sudo mount $(MNT_DEVICE)p1 $(MNT_BOOT)
+#	sudo mount $(MNT_DEVICE)p2 $(MNT_ROOT)
 
 .PHONY: unmount
 unmount: ## Unmount the current SD device
-	sudo umount $(MNT_DEVICE)p1 || true
-	sudo umount $(MNT_DEVICE)p2 || true
+	echo "Unmounting Here"
+#	sudo umount $(MNT_DEVICE)p1 || true
+#	sudo umount $(MNT_DEVICE)p2 || true
 
 .PHONY: wlan0
 wlan0: ## Install wpa_supplicant for auto network join
@@ -145,7 +147,8 @@ prepare: ## Create all necessary directories to be used in build
 
 .PHONY: clean
 clean: ## Unmount and delete all temporary mount directories
-	sudo umount $(MNT_DEVICE)p1 || true
-	sudo umount $(MNT_DEVICE)p2 || true
-	sudo rm -rf $(MNT_BOOT)
-	sudo rm -rf $(MNT_ROOT)
+	echo "Clean Step"
+#	sudo umount $(MNT_DEVICE)p1 || true
+#	sudo umount $(MNT_DEVICE)p2 || true
+#	sudo rm -rf $(MNT_BOOT)
+#	sudo rm -rf $(MNT_ROOT)
