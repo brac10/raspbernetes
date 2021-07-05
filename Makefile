@@ -3,31 +3,6 @@ SHELL := /bin/bash -o pipefail
 .SILENT:
 .DEFAULT_GOAL := help
 
-# Default variables
-MNT_DEVICE  = /dev/mmcblk0
-MNT_ROOT    = $(RPI_HOME)/raspbernetes/root
-MNT_BOOT    = $(RPI_HOME)/raspbernetes/boot
-RPI_HOME    = /home/pi
-OUTPUT_PATH = output
-
-# Raspberry PI host and IP configuration
-RPI_NETWORK_TYPE = wlan0
-RPI_HOSTNAME     = rpi-kube-master-01
-RPI_IP           = 192.168.1.101
-RPI_GATEWAY      = 192.168.1.1
-RPI_DNS          = $(RPI_GATEWAY)
-RPI_TIMEZONE     = America/Chicago
-
-# Kubernetes configuration
-KUBE_NODE_TYPE    = master
-KUBE_MASTER_VIP   = 192.168.1.100
-KUBE_MASTER_IP_01 = 192.168.1.101
-KUBE_MASTER_IP_02 = 192.168.1.102
-KUBE_MASTER_IP_03 = 192.168.1.103
-
-# Wifi details if required
-WIFI_SSID     = bracom
-WIFI_PASSWORD = Scott1957
 
 # Raspbian image configuration
 RASPBIAN_VERSION       = raspbian_lite-2020-02-14
@@ -53,7 +28,7 @@ build: prepare format install-conf create-conf clean ## Build SD card with Kuber
 
 ##@ Configuration Generation
 .PHONY: install-conf
-install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 mount ## Copy all configurations and scripts to SD card
+install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 #mount ## Copy all configurations and scripts to SD card
 	sudo touch $(MNT_BOOT)/ssh
 	mkdir -p $(RPI_HOME)/bootstrap/
 	cp -r ./raspbernetes/* $(RPI_HOME)/bootstrap/
@@ -89,25 +64,23 @@ dhcp-conf: ## Add dhcp configuration to set a static IP and gateway
 	echo "static domain_name_servers=$(RPI_DNS)" | sudo tee -a $(MNT_ROOT)/etc/dhcpcd.conf >/dev/null
 
 $(OUTPUT_PATH)/ssh/id_ed25519: ## Generate SSH keypair to use in cluster communication
-	ssh-keygen -t ed25519 -b 4096 -C "pi@Ranger1975#" -f ./$(OUTPUT_PATH)/ssh/id_ed25519 -q -N ""
+	ssh-keygen -t ed25519 -b 4096 -C "pi@raspberry" -f ./$(OUTPUT_PATH)/ssh/id_ed25519 -q -N ""
 
 ##@ Download and SD Card management
 .PHONY: format
-format: #$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img unmount ## Format the SD card with Raspbian
-	echo "Formatting SD card"
-#	sudo dd bs=4M if=./$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img of=$(MNT_DEVICE) status=progress conv=fsync
+format: $(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img unmount ## Format the SD card with Raspbian
+	echo "Formatting SD card with $(RASPBIAN_IMAGE_VERSION).img"
+	sudo dd bs=4M if=./$(OUTPUT_PATH)/$(RASPBIAN_IMAGE_VERSION).img of=$(MNT_DEVICE) status=progress conv=fsync
 
 .PHONY: mount
 mount: ## Mount the current SD device
-    echo "Mounting Step Here"
-#	sudo mount $(MNT_DEVICE)p1 $(MNT_BOOT)
-#	sudo mount $(MNT_DEVICE)p2 $(MNT_ROOT)
+	sudo mount $(MNT_DEVICE)p1 $(MNT_BOOT)
+	sudo mount $(MNT_DEVICE)p2 $(MNT_ROOT)
 
 .PHONY: unmount
 unmount: ## Unmount the current SD device
-	echo "Unmounting Here"
-#	sudo umount $(MNT_DEVICE)p1 || true
-#	sudo umount $(MNT_DEVICE)p2 || true
+	sudo umount $(MNT_DEVICE)p1 || true
+	sudo umount $(MNT_DEVICE)p2 || true
 
 .PHONY: wlan0
 wlan0: ## Install wpa_supplicant for auto network join
@@ -147,8 +120,7 @@ prepare: ## Create all necessary directories to be used in build
 
 .PHONY: clean
 clean: ## Unmount and delete all temporary mount directories
-	echo "Clean Step"
-#	sudo umount $(MNT_DEVICE)p1 || true
-#	sudo umount $(MNT_DEVICE)p2 || true
-#	sudo rm -rf $(MNT_BOOT)
-#	sudo rm -rf $(MNT_ROOT)
+	sudo umount $(MNT_DEVICE)p1 || true
+	sudo umount $(MNT_DEVICE)p2 || true
+	sudo rm -rf $(MNT_BOOT)
+	sudo rm -rf $(MNT_ROOT)

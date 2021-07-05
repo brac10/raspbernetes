@@ -1,0 +1,55 @@
+#!/bin/bash
+# Default variables
+export RPI_HOME="/home/pi"
+export MNT_DEVICE="/dev/mmcblk0"
+export MNT_ROOT="${RPI_HOME}/raspbernetes/root"
+export MNT_BOOT="${RPI_HOME}/raspbernetes/boot"
+
+export OUTPUT_PATH="output"
+
+# Raspberry PI host and IP configuration
+export RPI_NETWORK_TYPE="wlan0"
+export RPI_HOSTNAME="rpi-kube-master-01"
+export RPI_IP="192.168.1.101"
+export RPI_GATEWAY="192.168.1.1"
+export RPI_DNS="192.168.1.169"
+export RPI_TIMEZONE="America/Chicago"
+
+# Kubernetes configuration
+export KUBE_NODE_TYPE="master"
+export KUBE_MASTER_VIP="192.168.1.100"
+export KUBE_MASTER_IP_01="192.168.1.101"
+export KUBE_MASTER_IP_02="192.168.1.102"
+export KUBE_MASTER_IP_03="192.168.1.103"
+
+# Wifi details if required
+export WIFI_SSID="bracomorg"
+export WIFI_PASSWORD="Scott1957"
+
+echo "Created a headless Kubernetes SD card with the following properties:"
+echo "Home/Lan:"
+echo "- Home:         ${RPI_HOME}"
+echo "- MNT_DEVICE:   ${MNT_DEVICE}"
+echo "- MNT_ROOT:     ${MNT_ROOT}"
+echo "- MNT_BOOT:     ${MNT_BOOT}"
+echo "- OUTPUT_PATH:  ${OUTPUT_PATH}"
+echo "Network:"
+echo "- Hostname: ${RPI_HOSTNAME}"
+echo "- Static IP: ${RPI_IP}"
+echo "- Gateway address: ${RPI_DNS}"
+echo "- Network adapter: ${RPI_NETWORK_TYPE}"
+echo "- Timezone: ${RPI_TIMEZONE}"
+echo "Kubernetes:"
+echo "- Node Type: ${KUBE_NODE_TYPE}"
+echo "- Control Plane Endpoint: ${KUBE_MASTER_VIP}"
+echo "- Master IP 01: ${KUBE_MASTER_IP_01}"
+echo "- Master IP 02: ${KUBE_MASTER_IP_02}"
+echo "- Master IP 03: ${KUBE_MASTER_IP_03}"
+echo "Raspberry Pi:"
+echo "- RPI_HOSTNAME:   ${RPI_HOSTNAME}"
+echo "- RPI_NETWORK_TYPE: ${RPI_NETWORK_TYPE}"
+echo "- RPI_HOSTNAME:   ${RPI_HOSTNAME}"
+echo "- RPI_IP:         ${RPI_IP}"
+echo "- RPI_GATEWAY:    ${RPI_GATEWAY}"
+echo "- RPI_DNS:        ${RPI_DNS}"
+echo "- RPI_TIMEZONE:   ${RPI_TIMEZONE}"
