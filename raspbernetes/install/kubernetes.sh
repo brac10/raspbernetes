@@ -1,5 +1,10 @@
 #!/bin/bash
 set -euo pipefail
+export KUBE_NODE_TYPE="worker"
+export KUBE_MASTER_VIP="192.168.1.100"
+export KUBE_MASTER_IP_01="192.168.1.101"
+export KUBE_MASTER_IP_02="192.168.1.102"
+export KUBE_MASTER_IP_03="192.168.1.103"
 
 kube_version="1.20.4-00"
 kube_packages=("kubelet=${kube_version}" "kubectl=${kube_version}" "kubeadm=${kube_version}")

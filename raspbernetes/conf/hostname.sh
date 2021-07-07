@@ -1,5 +1,11 @@
 #!/bin/bash
 set -euo pipefail
+export RPI_NETWORK_TYPE="wlan0"
+export RPI_HOSTNAME="rpi-kube-worker-02"
+export RPI_IP="192.168.1.111"
+export RPI_GATEWAY="192.168.1.1"
+export RPI_DNS="192.168.1.169"
+export RPI_TIMEZONE="America/Chicago"
 
 echo "Setting hostname to: ${RPI_HOSTNAME}"
 hostnamectl --transient set-hostname "${RPI_HOSTNAME}"

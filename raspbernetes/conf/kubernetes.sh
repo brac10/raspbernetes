@@ -1,5 +1,7 @@
 #!/bin/bash
 set -euo pipefail
+export KUBE_NODE_TYPE="worker"
+export KUBE_MASTER_VIP="192.168.1.100"
 
 flannel_version="v0.13.0"
 flannel_url="https://raw.githubusercontent.com/flannel-io/flannel/${flannel_version}/Documentation/kube-flannel.yml"
