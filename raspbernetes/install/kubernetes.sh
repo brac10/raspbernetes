@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-export KUBE_NODE_TYPE="worker"
+export KUBE_NODE_TYPE="master"
 export KUBE_MASTER_VIP="192.168.1.100"
 export KUBE_MASTER_IP_01="192.168.1.101"
 export KUBE_MASTER_IP_02="192.168.1.102"

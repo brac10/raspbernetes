@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+export KUBE_MASTER_IP_01="192.168.1.101"
+export KUBE_MASTER_IP_02="192.168.1.102"
+export KUBE_MASTER_IP_03="192.168.1.103"
+
 haproxy_version="1.8.19-1+rpi1"
 
 echo "Installing haproxy ${haproxy_version}..."

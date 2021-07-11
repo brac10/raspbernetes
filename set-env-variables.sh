@@ -1,22 +1,17 @@
 #!/bin/bash
 # Default variables
 export RPI_HOME="/home/pi"
-export MNT_DEVICE="/dev/mmcblk0"
-export MNT_ROOT="${RPI_HOME}/raspbernetes/root"
-export MNT_BOOT="${RPI_HOME}/raspbernetes/boot"
-
-export OUTPUT_PATH="output"
 
 # Raspberry PI host and IP configuration
 export RPI_NETWORK_TYPE="wlan0"
-export RPI_HOSTNAME="rpi-kube-worker-02"
-export RPI_IP="192.168.1.111"
+export RPI_HOSTNAME="rpi-kube-master-vip"
+export RPI_IP="192.168.1.100"
 export RPI_GATEWAY="192.168.1.1"
 export RPI_DNS="192.168.1.169"
 export RPI_TIMEZONE="America/Chicago"
 
 # Kubernetes configuration
-export KUBE_NODE_TYPE="worker"
+export KUBE_NODE_TYPE="master"
 export KUBE_MASTER_VIP="192.168.1.100"
 export KUBE_MASTER_IP_01="192.168.1.101"
 export KUBE_MASTER_IP_02="192.168.1.102"
