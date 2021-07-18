@@ -24,9 +24,9 @@ backend kube-api-be
   timeout server 4h
   balance roundrobin
   default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
-  server kube-master-01 ${KUBE_MASTER_IP_01}:6443 check
-  server kube-master-02 ${KUBE_MASTER_IP_02}:6443 check
-  server kube-master-03 ${KUBE_MASTER_IP_03}:6443 check
+  server kube-master-01 192.168.1.101:6443 check
+  server kube-master-02 192.168.1.102:6443 check
+  server kube-master-03 192.168.1.103:6443 check
 EOF
 
 # reload after new configuration file has been updated

@@ -3,6 +3,31 @@ SHELL := /bin/bash -o pipefail
 .SILENT:
 .DEFAULT_GOAL := help
 
+# Default variables
+MNT_DEVICE  = /dev/mmcblk0
+MNT_ROOT    = /mnt/raspbernetes/root
+MNT_BOOT    = /mnt/raspbernetes/boot
+RPI_HOME    = $(MNT_ROOT)/home/pi
+OUTPUT_PATH = output
+
+# Raspberry PI host and IP configuration
+RPI_NETWORK_TYPE  = eth0
+RPI_HOSTNAME      = rpi-kube-master-01
+RPI_IP            = 192.168.1.101
+RPI_GATEWAY       = 192.168.1.1
+RPI_DNS           = 192.168.1.169
+RPI_TIMEZONE      = America/Chicago
+
+# Kubernetes configuration
+KUBE_NODE_TYPE     = master
+KUBE_MASTER_VIP    = 192.168.1.100
+KUBE_MASTER_IP_01  = 192.168.1.101
+KUBE_MASTER_IP_02  = 192.168.1.102
+KUBE_MASTER_IP_03  = 192.168.1.103
+
+# Wifi details if required
+WIFI_SSID     = bracomorg
+WIFI_PASSWORD = Scott1957
 
 # Raspbian image configuration
 RASPBIAN_VERSION       = raspbian_lite-2020-02-14
@@ -28,7 +53,7 @@ build: prepare format install-conf create-conf clean ## Build SD card with Kuber
 
 ##@ Configuration Generation
 .PHONY: install-conf
-install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 #mount ## Copy all configurations and scripts to SD card
+install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 mount ## Copy all configurations and scripts to SD card
 	sudo touch $(MNT_BOOT)/ssh
 	mkdir -p $(RPI_HOME)/bootstrap/
 	cp -r ./raspbernetes/* $(RPI_HOME)/bootstrap/
@@ -40,7 +65,7 @@ install-conf: $(OUTPUT_PATH)/ssh/id_ed25519 #mount ## Copy all configurations an
 .PHONY: create-conf
 create-conf: $(RPI_NETWORK_TYPE) bootstrap-conf dhcp-conf ## Add default start up script, disable SSH password and enable cgroups on boot
 	sudo sed -i "/^exit 0$$/i /home/pi/bootstrap/bootstrap.sh 2>&1 | logger -t kubernetes-bootstrap &" $(MNT_ROOT)/etc/rc.local
-	sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" $(MNT_ROOT)/etc/ssh/sshd_config
+	sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication no/g" $(MNT_ROOT)/etc/ssh/sshd_config
 	sudo sed -i "s/^/cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory /" $(MNT_BOOT)/cmdline.txt
 
 .PHONY: bootstrap-conf
